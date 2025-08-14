@@ -1,0 +1,248 @@
+/* Container for entire applications page */
+.apps-wrapper {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Header section with title + actions */
+.apps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+
+.apps-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #222;
+}
+
+.subtitle {
+  color: #777;
+  font-size: 0.9rem;
+  margin-top: 3px;
+}
+
+/* Grid for application cards */
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Application card styling */
+.app-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* Main content inside the card */
+.app-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.app-left {
+  flex: 1;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  margin: 0 0 6px 0;
+  color: #333;
+}
+
+.app-sub {
+  font-size: 0.9rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.app-sub .dot {
+  width: 6px;
+  height: 6px;
+  background: #666;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+/* Meta info section */
+.app-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.meta-value {
+  color: #222;
+  margin-top: 2px;
+}
+
+/* Right side badge */
+.app-right {
+  margin-left: 15px;
+}
+
+/* Status badges */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #fff;
+  display: inline-block;
+}
+
+.status.accepted {
+  background-color: #28a745;
+}
+
+.status.pending {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.status.rejected {
+  background-color: #dc3545;
+}
+
+/* Footer with description and CTA */
+.app-footer {
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.app-desc {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn.primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background-color: #0069d9;
+}
+
+.btn.transparent {
+  background: none;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.btn.transparent:hover {
+  background-color: #f5f5f5;
+}
+
+/* Centered messages */
+.center {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.center.muted {
+  color: #888;
+}
+
+.center.error {
+  color: #dc3545;
+  font-weight: bold;
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  gap: 10px;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #eee;
+  border-top: 5px solid #4caf50; /* green-ish color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.status-filters {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #eee;
+  transition: 0.3s ease;
+}
+
+.filter-btn.active {
+  box-shadow: 0 0 0 2px #00000022;
+}
+
+.filter-btn.accepted {
+  background-color: #e0f8e9;
+  color: #2e7d32;
+}
+
+.filter-btn.pending {
+  background-color: #fff4e5;
+  color: #ff9800;
+}
+
+.filter-btn.rejected {
+  background-color: #ffe6e6;
+  color: #d32f2f;
+}
+
+.filter-btn.all {
+  background-color: #f0f0f0;
+  color: #555;
+}

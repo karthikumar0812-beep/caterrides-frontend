@@ -1,0 +1,131 @@
+/* Overall container */
+.profile-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px;
+  background: #f9fafb;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* Profile Card */
+.profile-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.06);
+  margin-bottom: 25px;
+}
+
+.profile-card h1 {
+  font-size: 1.8rem;
+  color: #2b2b2b;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+.profile-details p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.profile-details strong {
+  color: #1e3a8a;
+}
+
+/* Event Section */
+.events-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-count {
+  background: #2563eb;
+  color: white;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  border-radius: 20px;
+}
+
+/* Table Styling */
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.events-table th,
+.events-table td {
+  padding: 14px;
+  text-align: left;
+}
+
+.events-table th {
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+}
+
+.events-table tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.events-table tr:hover {
+  background-color: #eff6ff;
+  transition: background-color 0.3s ease;
+}
+
+/* Empty States */
+.no-events {
+  padding: 15px;
+  color: #777;
+  font-style: italic;
+}
+
+.loading-text,
+.error-text {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1rem;
+}
+
+.loading-text {
+  color: #2563eb;
+}
+
+.error-text {
+  color: red;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+

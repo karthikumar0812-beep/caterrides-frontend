@@ -1,0 +1,54 @@
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #fffde7; /* Light yellow background */
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(255, 223, 0, 0.4);
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.login-container h2 {
+  color: #ff6f00; /* Bright orange heading */
+  margin-bottom: 20px;
+}
+
+.login-container input {
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #ffcc00; /* Yellow border */
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.login-container button {
+  background-color: #ff6f00; /* Orange button */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+  transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #e65100; /* Darker orange on hover */
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* For login redirect text/links if you add them */
+.login-redirect {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}

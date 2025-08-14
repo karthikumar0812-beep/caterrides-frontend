@@ -1,0 +1,66 @@
+/* RiderLogin.css */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  margin: 0;
+  padding: 0;
+}
+
+.login-container {
+  background-color: #fff;
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.login-container h2 {
+  margin-bottom: 24px;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+form input:focus {
+  border-color: #0072ff;
+  outline: none;
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0072ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #005ecb;
+}
+
+form button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: #e63946;
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
