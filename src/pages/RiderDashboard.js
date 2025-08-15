@@ -27,7 +27,7 @@ const RiderDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [backendDown, setBackendDown] = useState(false);
   const [applyingId, setApplyingId] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // for mobile overlay
   const [riderName] = useState(localStorage.getItem("riderName") || "");
   const [openDescriptionId, setOpenDescriptionId] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
@@ -53,6 +53,7 @@ const RiderDashboard = () => {
 
     fetchEvents();
   }, []);
+
   const handleApply = async (eventId) => {
     const token = localStorage.getItem("riderToken");
     if (!token) {
@@ -99,150 +100,173 @@ const RiderDashboard = () => {
     setOpenDescriptionId((prev) => (prev === id ? null : id));
   };
 
-  //logout
   const handleLogout = () => {
     localStorage.removeItem("riderToken");
     localStorage.removeItem("riderName");
-
-    // Let other components know name is cleared
     window.dispatchEvent(new Event("riderNameChanged"));
-
     navigate("/rider/login");
   };
 
+  // Toggle only for mobile overlay
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+
+  // Close overlay with ESC
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onKeyDown = (e) => e.key === "Escape" && setSidebarOpen(false);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [sidebarOpen]);
+
   return (
-  <div
-    className={`dashboard-wrapper ${
-      sidebarOpen ? "sidebar-open" : "sidebar-closed"
-    }`}
-  >
-    <aside className="dashboard-sidebar" aria-hidden={!sidebarOpen}>
-      <div className="sidebar-top">
-        <button
-          className="sidebar-toggle"
-          onClick={() => setSidebarOpen((s) => !s)}
-          aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-        >
-          {sidebarOpen ? <FaTimes /> : <FaBars />}
-        </button>
-        <div className="profile-circle">
-          {riderName ? riderName.charAt(0).toUpperCase() : "R"}
-        </div>
-        <h3 className="rider-name">{riderName || "Rider"}</h3>
-      </div>
-      <nav className="sidebar-nav">
-        <button className="nav-btn" onClick={() => navigate("/rider/profile")}>
-          Profile
-        </button>
-        <button
-          className="nav-btn"
-          onClick={() => navigate("/rider/applications")}
-        >
-          Application Status
-        </button>
-        <button
-          className="nav-btn logout-btn"
-          onClick={handleLogout}
-          style={{
-            color: "white",
-            backgroundColor: "gray",
-            marginTop: "10px",
-          }}
-        >
-          Logout
-        </button>
-      </nav>
-    </aside>
-
-    <main className="dashboard-main">
-      <header className="dashboard-header">
-        <div className="header-left">
-          <button
-            className="mobile-toggle"
-            onClick={() => setSidebarOpen((s) => !s)}
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
-          <h2>Available Events</h2>
-        </div>
-      </header>
-
-      {statusMessage && (
-        <div className={`status-message ${statusType}`}>{statusMessage}</div>
-      )}
-
-      {loading && (
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Fetching events...</p>
-        </div>
-      )}
-
-      {backendDown && !loading && <p>Backend is down</p>}
-      {!backendDown && !loading && events.length === 0 && <p>No events.</p>}
-
-      <section className="events-grid" role="list">
-        {events.map((ev) => (
-          <article key={ev._id} className="event-card" role="listitem">
-            <div className="event-head">
-              <div>
-                <h3>{ev.title}</h3>
-                <div>{ev.location}</div>
-              </div>
-              <div className="price-badge">₹ {ev.negotiatePrice ?? "N/A"}</div>
-            </div>
-
-            <div className="event-meta">
-              <div>
-                <strong>Date</strong> {formatDate(ev.date)}
-              </div>
-              <div>
-                <strong>Vacancies</strong> {ev.vacancies ?? "N/A"}
-              </div>
-            </div>
-
-            <div className="event-description-toggle">
-              <button
-                className="info-btn"
-                onClick={() => toggleDescription(ev._id)}
-              >
-                <FaInfoCircle /> View Description
-              </button>
-            </div>
-
-            <div className="event-actions">
-              <button
-                className="apply-btn"
-                onClick={() => handleApply(ev._id)}
-                disabled={applyingId === ev._id || (ev.vacancies ?? 0) <= 0}
-              >
-                {applyingId === ev._id
-                  ? "Applying..."
-                  : (ev.vacancies ?? 0) > 0
-                  ? "Apply"
-                  : "Full"}
-              </button>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      {/* Modal for Description */}
-      {openDescriptionId && (
-        <div className="modal-overlay" onClick={() => setOpenDescriptionId(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Description</h3>
-            <p>{events.find((ev) => ev._id === openDescriptionId)?.description}</p>
-            <button className="close-modal" onClick={() => setOpenDescriptionId(null)}>
-              Close
-            </button>
+    // Keep layout; add 'sidebar-open' so desktop sidebar has width via your CSS
+    <div className="dashboard-wrapper sidebar-open">
+      {/* ✅ Desktop sidebar (always rendered; auto-hidden on mobile by your CSS) */}
+      <aside className="dashboard-sidebar" aria-label="Sidebar">
+        <div className="sidebar-top">
+          {/* no close button on desktop */}
+          <div className="profile-circle">
+            {riderName ? riderName.charAt(0).toUpperCase() : "R"}
           </div>
+          <h3 className="rider-name">{riderName || "Rider"}</h3>
+        </div>
+        <nav className="sidebar-nav">
+          <button className="nav-btn" onClick={() => navigate("/rider/profile")}>
+            Profile
+          </button>
+          <button className="nav-btn" onClick={() => navigate("/rider/applications")}>
+            Application Status
+          </button>
+          <button className="nav-btn logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </nav>
+      </aside>
+
+      {/* ✅ Mobile fullscreen overlay sidebar (renders only when open) */}
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}>
+          <aside
+            className="dashboard-sidebar fullscreen"
+            onClick={(e) => e.stopPropagation()}
+            aria-label="Mobile sidebar"
+          >
+            <div className="sidebar-top">
+              <button
+                className="sidebar-toggle"
+                onClick={() => setSidebarOpen(false)}
+                aria-label="Close sidebar"
+              >
+                <FaTimes />
+              </button>
+              <div className="profile-circle">
+                {riderName ? riderName.charAt(0).toUpperCase() : "R"}
+              </div>
+              <h3 className="rider-name">{riderName || "Rider"}</h3>
+            </div>
+            <nav className="sidebar-nav">
+              <button className="nav-btn" onClick={() => navigate("/rider/profile")}>
+                Profile
+              </button>
+              <button className="nav-btn" onClick={() => navigate("/rider/applications")}>
+                Application Status
+              </button>
+              <button className="nav-btn logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </nav>
+          </aside>
         </div>
       )}
-    </main>
-  </div>
-);
-}
+
+      <main className="dashboard-main">
+        <header className="dashboard-header">
+          <div className="header-left">
+            <button
+              className="mobile-toggle"
+              onClick={toggleSidebar} // shows/hides mobile overlay
+              aria-label="Open sidebar"
+            >
+              <FaBars />
+            </button>
+            <h2>Available Events</h2>
+          </div>
+        </header>
+
+        {statusMessage && (
+          <div className={`status-message ${statusType}`}>{statusMessage}</div>
+        )}
+
+        {loading && (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Fetching events...</p>
+          </div>
+        )}
+
+        {backendDown && !loading && <p>Backend is down</p>}
+        {!backendDown && !loading && events.length === 0 && <p>No events.</p>}
+
+        <section className="events-grid" role="list">
+          {events.map((ev) => (
+            <article key={ev._id} className="event-card" role="listitem">
+              <div className="event-head">
+                <div>
+                  <h3>{ev.title}</h3>
+                  <div>{ev.location}</div>
+                </div>
+                <div className="price-badge">₹ {ev.negotiatePrice ?? "N/A"}</div>
+              </div>
+
+              <div className="event-meta">
+                <div>
+                  <strong>Date</strong> {formatDate(ev.date)}
+                </div>
+                <div>
+                  <strong>Vacancies</strong> {ev.vacancies ?? "N/A"}
+                </div>
+              </div>
+
+              <div className="event-description-toggle">
+                <button
+                  className="info-btn"
+                  onClick={() => toggleDescription(ev._id)}
+                >
+                  <FaInfoCircle /> View Description
+                </button>
+              </div>
+
+              <div className="event-actions">
+                <button
+                  className="apply-btn"
+                  onClick={() => handleApply(ev._id)}
+                  disabled={applyingId === ev._id || (ev.vacancies ?? 0) <= 0}
+                >
+                  {applyingId === ev._id
+                    ? "Applying..."
+                    : (ev.vacancies ?? 0) > 0
+                    ? "Apply"
+                    : "Full"}
+                </button>
+              </div>
+            </article>
+          ))}
+        </section>
+
+        {openDescriptionId && (
+          <div className="modal-overlay" onClick={() => setOpenDescriptionId(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>Description</h3>
+              <p>{events.find((ev) => ev._id === openDescriptionId)?.description}</p>
+              <button className="close-modal" onClick={() => setOpenDescriptionId(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
 
 export default RiderDashboard;

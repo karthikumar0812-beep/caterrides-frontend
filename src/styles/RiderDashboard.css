@@ -27,7 +27,7 @@ body {
 }
 
 .dashboard-sidebar {
-  background-color: #b3621f;
+  background-color: #1e293b; /* Dark slate blue */
   color: white;
   transition: width 0.3s ease;
   overflow: hidden;
@@ -35,7 +35,6 @@ body {
   flex-direction: column;
   padding: 1rem 0;
 }
-
 .sidebar-top {
   display: flex;
   flex-direction: column;
@@ -77,16 +76,10 @@ body {
   margin-top: 1rem;
 }
 
+
 .nav-btn {
-  background-color: #c43812;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  margin: 0.3rem 0;
-  width: 80%;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+background-color: #155724;
+color: red;
 }
 
 .nav-btn:hover {
@@ -410,3 +403,49 @@ body {
     transform: translateY(-10px);
   }
 }
+/* Fullscreen Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* make sure it's above other content */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Fullscreen Sidebar */
+.dashboard-sidebar.fullscreen {
+  background: white;
+  width: 250px;
+  height: 100%;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Hide default sidebar on mobile */
+@media (max-width: 768px) {
+  .dashboard-sidebar:not(.fullscreen) {
+    display: none;
+  }
+
+  .mobile-toggle {
+  background: black;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+}
+
