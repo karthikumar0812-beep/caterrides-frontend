@@ -27,7 +27,7 @@ const RiderDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [backendDown, setBackendDown] = useState(false);
   const [applyingId, setApplyingId] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // for mobile overlay
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [riderName] = useState(localStorage.getItem("riderName") || "");
   const [openDescriptionId, setOpenDescriptionId] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
@@ -107,24 +107,38 @@ const RiderDashboard = () => {
     navigate("/rider/login");
   };
 
-  // Toggle only for mobile overlay
-  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
-  // Close overlay with ESC
+  // Close sidebar when clicking outside or pressing ESC
   useEffect(() => {
-    if (!sidebarOpen) return;
-    const onKeyDown = (e) => e.key === "Escape" && setSidebarOpen(false);
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    const handleClickOutside = (event) => {
+      if (sidebarOpen && !event.target.closest('.dashboard-sidebar')) {
+        setSidebarOpen(false);
+      }
+    };
+
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, [sidebarOpen]);
 
   return (
-    // Keep layout; add 'sidebar-open' so desktop sidebar has width via your CSS
-    <div className="dashboard-wrapper sidebar-open">
-      {/* ✅ Desktop sidebar (always rendered; auto-hidden on mobile by your CSS) */}
+    <div className={`dashboard-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
+      {/* Desktop Sidebar (always visible on large screens) */}
       <aside className="dashboard-sidebar" aria-label="Sidebar">
         <div className="sidebar-top">
-          {/* no close button on desktop */}
           <div className="profile-circle">
             {riderName ? riderName.charAt(0).toUpperCase() : "R"}
           </div>
@@ -143,18 +157,14 @@ const RiderDashboard = () => {
         </nav>
       </aside>
 
-      {/* ✅ Mobile fullscreen overlay sidebar (renders only when open) */}
+      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}>
-          <aside
-            className="dashboard-sidebar fullscreen"
-            onClick={(e) => e.stopPropagation()}
-            aria-label="Mobile sidebar"
-          >
+        <div className="sidebar-overlay">
+          <aside className="dashboard-sidebar mobile-sidebar" aria-label="Mobile sidebar">
             <div className="sidebar-top">
               <button
-                className="sidebar-toggle"
-                onClick={() => setSidebarOpen(false)}
+                className="sidebar-close"
+                onClick={toggleSidebar}
                 aria-label="Close sidebar"
               >
                 <FaTimes />
@@ -173,7 +183,7 @@ const RiderDashboard = () => {
               </button>
               <button className="nav-btn logout-btn" onClick={handleLogout}>
                 Logout
-              </button>
+          </button>
             </nav>
           </aside>
         </div>
@@ -184,7 +194,7 @@ const RiderDashboard = () => {
           <div className="header-left">
             <button
               className="mobile-toggle"
-              onClick={toggleSidebar} // shows/hides mobile overlay
+              onClick={toggleSidebar}
               aria-label="Open sidebar"
             >
               <FaBars />
