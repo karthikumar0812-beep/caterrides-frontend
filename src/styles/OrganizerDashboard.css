@@ -1,227 +1,212 @@
-/* OrganizerDashboard.css */
-
-/* Base Styles */
-:root {
-  --primary-color: #4a6fa5;
-  --secondary-color: #166088;
-  --accent-color: #4fc3f7;
-  --text-color: #333;
-  --light-gray: #f5f5f5;
-  --medium-gray: #e0e0e0;
-  --dark-gray: #757575;
-  --white: #ffffff;
-  --sidebar-width: 250px;
-  --transition-speed: 0.3s;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  background-color: var(--light-gray);
-}
-
-/* Dashboard Layout */
+/* General Styles */
 .dashboard-container {
   display: flex;
   min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Sidebar Styles - Now as a fixed header */
 .sidebar {
-  width: var(--sidebar-width);
-  background-color: var(--primary-color);
-  color: var(--white);
-  height: 100vh;
   position: fixed;
-  padding: 2rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.main-content {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  padding: 2rem;
-  min-height: 100vh;
-}
-
-/* Sidebar Styles */
-.sidebar button {
-  background-color: var(--accent-color);
-  color: var(--white);
-  border: none;
-  padding: 0.8rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  text-align: left;
-  transition: background-color 0.2s;
+  top: 0;
+  left: 0;
   width: 100%;
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  gap: 10px;
+}
+
+.sidebar button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .sidebar button:hover {
-  background-color: var(--secondary-color);
+  background-color: #2980b9;
+  transform: translateY(-2px);
 }
 
-/* Main Content Styles */
+.logout-btn {
+  background-color: #e74c3c !important;
+  margin-left: auto;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b !important;
+}
+
+/* Main Content Styles - Adjusted for fixed header */
+.main-content {
+  flex: 1;
+  padding: 80px 30px 30px; /* Extra top padding for fixed header */
+  margin-top: 0;
+}
+
 .main-content h2 {
-  color: var(--secondary-color);
-  margin-bottom: 2rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--medium-gray);
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 28px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
 }
 
-/* Events List */
+/* Events List Styles */
 .events-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .event-card {
-  background-color: var(--white);
+  background-color: white;
   border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 1.5rem;
-  align-items: center;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .event-card h3 {
-  color: var(--secondary-color);
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 20px;
 }
 
 .event-card p {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  margin: 0.3rem 0;
+  margin: 8px 0;
+  color: #555;
+  font-size: 15px;
 }
 
 .event-card strong {
-  font-weight: 600;
-  color: var(--dark-gray);
+  color: #2c3e50;
 }
 
-.event-card button {
-  background-color: var(--primary-color);
-  color: var(--white);
+/* Event Actions Styles */
+.event-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.event-actions button {
+  flex: 1;
+  padding: 8px 12px;
   border: none;
-  padding: 0.6rem 1rem;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  justify-self: end;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
-.event-card button:hover {
-  background-color: var(--secondary-color);
+.event-actions button:first-child {
+  background-color: #3498db;
+  color: white;
 }
 
-/* Loading State */
+.event-actions button:first-child:hover {
+  background-color: #2980b9;
+}
+
+.update-btn {
+  background-color: #f39c12;
+  color: white;
+}
+
+.update-btn:hover {
+  background-color: #d35400;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Loading Spinner Styles */
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 40px;
 }
 
 .spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top: 4px solid var(--primary-color);
   width: 40px;
   height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 15px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive Design */
-@media (max-width: 992px) {
-  .event-card {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "title title"
-      "details details"
-      "price button";
-    gap: 1rem;
-  }
-
-  .event-card h3 {
-    grid-area: title;
-  }
-
-  .event-card div:first-of-type {
-    grid-area: details;
-  }
-
-  .event-card button {
-    grid-area: button;
+  to {
+    transform: rotate(360deg);
   }
 }
 
+.loading-container p {
+  color: #555;
+  font-size: 16px;
+}
+
+/* Responsive Styles */
 @media (max-width: 768px) {
   .sidebar {
-    width: 80px;
-    padding: 2rem 0.5rem;
-    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px;
   }
-
+  
   .sidebar button {
-    padding: 0.8rem 0;
-    text-align: center;
-    font-size: 0.8rem;
+    padding: 6px 10px;
+    font-size: 12px;
   }
-
-  .sidebar button span {
-    display: none;
-  }
-
+  
   .main-content {
-    margin-left: 80px;
-    padding: 1.5rem;
+    padding: 100px 15px 15px; /* More top padding for wrapped header */
   }
-
-  /* Keep same as desktop */
-  .event-card {
-    display: grid;
-    grid-template-columns: 1fr auto; /* details on left, button on right */
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .event-card button {
-    margin-top: 0;
-    align-self: center;
+  
+  .events-list {
+    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 576px) {
-  .main-content {
-    padding: 1rem;
+@media (max-width: 480px) {
+  .sidebar {
+    gap: 5px;
   }
-
-  /* Still same as desktop, just tighter spacing */
-  .event-card {
-    grid-template-columns: 1fr auto;
-    gap: 0.5rem;
+  
+  .sidebar button {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  
+  .main-content {
+    padding: 120px 10px 10px; /* Even more top padding for very small screens */
   }
 }

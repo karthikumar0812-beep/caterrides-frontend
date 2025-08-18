@@ -77,22 +77,35 @@ const OrganizerDashboard = () => {
             <p>Fetching events...</p>
           </div>
         )}
-          <div className="events-list">
-            {events.map((event) => (
-              <div key={event._id} className="event-card">
-                <h3>{event.title}</h3>
-                <p><strong>Location:</strong> {event.location}</p>
-                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
-                <p><strong>Vacancies:</strong> {event.vacancies}</p>
-                <p><strong>Price:</strong> ₹{event.negotiatePrice}</p>
-                <button
-                  onClick={() => navigate(`/view-applicants/${event._id}`)}
-                >
-                  View Applicants
-                </button>
-              </div>
-            ))}
-          </div>
+      <div className="events-list">
+  {events.map((event) => (
+    <div key={event._id} className="event-card">
+      <h3>{event.title}</h3>
+      <p><strong>Location:</strong> {event.location}</p>
+      <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+      <p><strong>Vacancies:</strong> {event.vacancies}</p>
+      <p><strong>Price:</strong> ₹{event.negotiatePrice}</p>
+
+      <div className="event-actions">
+        <button onClick={() => navigate(`/view-applicants/${event._id}`)}>
+          View Applicants
+        </button>
+        <button 
+          onClick={() => navigate(`/update-event/${event._id}`)} 
+          className="update-btn"
+        >
+          Update
+        </button>
+        <button 
+          className="delete-btn"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
       </div>
     </div>
   );

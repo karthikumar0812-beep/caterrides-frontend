@@ -12,6 +12,7 @@ import PostEvent from "./pages/PostEvent";
 import Viewmyapplicats from "./pages/Viewmyapplicants";
 import Organizerprofile from "./pages/Organizerprofile";
 import Viewevent from "./pages/Viewevent";
+import UpdateEvent from "./pages/UpdateEvent";
 function App() {
   return (
     <Router>
@@ -30,6 +31,7 @@ function App() {
         <Route path="/view-applicants/:eventId" element={<Viewmyapplicats/>} />
         <Route path="/organizer-profile" element={<Organizerprofile/>} />
         <Route path="/rider/event/:eventId" element={<Viewevent/>} />
+        <Route path="update-event/:eventId" element={<UpdateEvent/>} />
         
       </Routes>
     </Router>
