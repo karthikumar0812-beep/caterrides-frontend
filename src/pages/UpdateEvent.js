@@ -17,7 +17,7 @@ const UpdateEvent = () => {
     const fetchEvent = async () => {
       const token = localStorage.getItem("organizerToken");
       try {
-        const res = await fetch(`http://localhost:10000/api/organizer/eventdetails/${eventId}`, {
+        const res = await fetch(`https://caterrides.onrender.com/api/organizer/eventdetails/${eventId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -56,7 +56,7 @@ const UpdateEvent = () => {
     const token = localStorage.getItem("organizerToken");
 
     try {
-      const res = await fetch(`http://localhost:10000/api/organizer/updateevent/${eventId}`, {
+      const res = await fetch(`https://caterrides.onrender.com/api/organizer/updateevent/${eventId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
