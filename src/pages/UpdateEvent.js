@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const UpdateEvent = () => {
-  const { id } = useParams(); // eventId from URL
+  const { eventId } = useParams(); // eventId from URL
   const navigate = useNavigate();
   const [eventData, setEventData] = useState({
     title: "",
@@ -17,7 +17,7 @@ const UpdateEvent = () => {
     const fetchEvent = async () => {
       const token = localStorage.getItem("organizerToken");
       try {
-        const res = await fetch(`https://caterrides.onrender.com/api/rider/eventinfo/${id}`, {
+        const res = await fetch(`http://localhost:10000/api/organizer/eventdetails/${eventId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -41,7 +41,7 @@ const UpdateEvent = () => {
     };
 
     fetchEvent();
-  }, [id, navigate]);
+  }, [eventId, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -56,7 +56,7 @@ const UpdateEvent = () => {
     const token = localStorage.getItem("organizerToken");
 
     try {
-      const res = await fetch(`https://caterrides.onrender.com/api/organizer/updateevent/${id}`, {
+      const res = await fetch(`http://localhost:10000/api/organizer/updateevent/${eventId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
