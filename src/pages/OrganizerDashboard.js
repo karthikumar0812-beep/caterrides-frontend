@@ -46,7 +46,7 @@ const OrganizerDashboard = () => {
   const deleteEvent = async (eventId) => {
     const token = localStorage.getItem("organizerToken");
     try {
-      const res = await fetch(`http://localhost:10000/api/organizer/deleteevent/${eventId}`, {
+      const res = await fetch(`https://caterrides.onrender.com/api/organizer/deleteevent/${eventId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
