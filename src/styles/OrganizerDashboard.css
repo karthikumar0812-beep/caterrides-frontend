@@ -210,3 +210,40 @@
     padding: 120px 10px 10px; /* Even more top padding for very small screens */
   }
 }
+
+.confirm-popup {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.confirm-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.popup-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirm-btn {
+  background: red;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+}
+
+.cancel-btn {
+  background: gray;
+  color: rgb(233, 25, 25);
+  padding: 8px 15px;
+  border-radius: 5px;
+}
