@@ -1,13 +1,15 @@
-// src/pages/Riderlogin.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/RiderLogin.css";
+import { useNavigate, Link } from "react-router-dom";
+import { FaUtensils, FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
+import "../styles//RiderLogin.css";
 
-const Riderlogin = () => {
+const RiderLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // loading state
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   // Auto-redirect if already logged in
@@ -15,6 +17,13 @@ const Riderlogin = () => {
     const token = localStorage.getItem("riderToken");
     if (token) {
       navigate("/rider-dashboard");
+    }
+
+    // Check if credentials were saved
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
     }
   }, [navigate]);
 
@@ -41,52 +50,132 @@ const Riderlogin = () => {
           localStorage.setItem("riderName", name);
         }
 
+        // Save email if remember me is checked
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
         // Notify other components in same tab
         window.dispatchEvent(new Event("riderNameChanged"));
 
         navigate("/rider-dashboard");
       } else {
-        setError(data.message || "Invalid credentials");
+        setError(data.message || "Invalid credentials. Please try again.");
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Something went wrong. Please try again.");
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div className="login-container" aria-busy={loading}>
-      <h2>Rider Login</h2>
+    <div className="rider-login-container">
+      <div className="rider-login-card">
+        <div className="login-header">
+          <div className="logo">
+            <FaUtensils className="logo-icon" />
+            <h1>CaterRides</h1>
+          </div>
+          <h2>Rider Login</h2>
+          <p>Welcome back! Please login to your account</p>
+        </div>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading}
-        />
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="input-group">
+            <FaEnvelope className="input-icon" />
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              className="login-input"
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
+          <div className="input-group">
+            <FaLock className="input-icon" />
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              className="login-input"
+            />
+            <button 
+              type="button" 
+              onClick={togglePasswordVisibility}
+              className="password-toggle"
+              disabled={loading}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <div className="login-options">
+            <label className="remember-me">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={() => setRememberMe(!rememberMe)}
+                disabled={loading}
+              />
+              <span>Remember me</span>
+            </label>
+            
+            <Link to="/forgot-password" className="forgot-link">
+              Forgot password?
+            </Link>
+          </div>
 
-        {error && <p className="error-text" role="alert">{error}</p>}
-      </form>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="login-button"
+          >
+            {loading ? (
+              <div className="button-spinner"></div>
+            ) : (
+              "Login"
+            )}
+          </button>
+
+          {error && (
+            <div className="error-message" role="alert">
+              {error}
+            </div>
+          )}
+        </form>
+
+        <div className="login-footer">
+          <p>Don't have an account? <Link to="/rider" className="signup-link">Sign up</Link></p>
+        </div>
+      </div>
+
+      <div className="login-decoration">
+        <div className="decoration-item item-1">
+          <FaUtensils />
+        </div>
+        <div className="decoration-item item-2">
+          <FaUtensils />
+        </div>
+        <div className="decoration-item item-3">
+          <FaUtensils />
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Riderlogin;
+export default RiderLogin;
