@@ -186,7 +186,7 @@ const RiderDashboard = () => {
             </div>
             <div className="profile-info">
               <h3 className="rider-name">{riderName || "Rider"}</h3>
-              <p className="rider-role">Delivery Partner</p>
+              <p className="rider-role">Trusted Rider</p>
             </div>
           </div>
         </div>
@@ -399,7 +399,7 @@ const RiderDashboard = () => {
         {!backendDown && !loading && events.length > 0 && (
           <section className="events-section">
             <div className="section-header">
-              <h2>Available Delivery Events ({events.length})</h2>
+              <h2>Available Events ({events.length})</h2>
               <div className="view-toggle">
                 <button className="view-option active">Grid</button>
                 <button className="view-option">List</button>
