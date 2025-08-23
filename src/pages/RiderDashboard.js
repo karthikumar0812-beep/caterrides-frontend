@@ -37,32 +37,70 @@ const RiderDashboard = () => {
   const [order, setOrder] = useState("asc");
   const [showFilters, setShowFilters] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 20; // 20 events per page
+  const [hasMore, setHasMore] = useState(true); // whether more events exist
+
 
   const navigate = useNavigate();
 
-  const fetchEvents = async () => {
-    setLoading(true);
-    setBackendDown(false);
-    try {
-      const url = new URL(API_EVENTS);
-      if (place) url.searchParams.append("place", place);
-      if (sortBy) url.searchParams.append("sortBy", sortBy);
-      if (order) url.searchParams.append("order", order);
+  const fetchEvents = async (pageNumber = 1) => {
+  if (!hasMore && pageNumber !== 1) return; // stop if no more pages
 
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setEvents(Array.isArray(data) ? data : data.events || []);
-    } catch {
-      setBackendDown(true);
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  setBackendDown(false);
+
+  try {
+    const url = new URL(API_EVENTS);
+    if (place) url.searchParams.append("place", place);
+    if (sortBy) url.searchParams.append("sortBy", sortBy);
+    if (order) url.searchParams.append("order", order);
+    url.searchParams.append("page", pageNumber);
+    url.searchParams.append("limit", limit);
+
+    const res = await fetch(url.toString());
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    const newEvents = Array.isArray(data.events) ? data.events : [];
+    if (pageNumber === 1) {
+      setEvents(newEvents);
+    } else {
+      setEvents((prev) => [...prev, ...newEvents]); // append next page
+    }
+
+    setPage(data.page || pageNumber);
+    setTotalPages(data.totalPages || 1);
+    setHasMore(data.page < data.totalPages); // stop if last page
+  } catch {
+    setBackendDown(true);
+  } finally {
+    setLoading(false);
+  }
+};
+ useEffect(() => {
+  fetchEvents(1); // fetch first page on mount
+}, [place, sortBy, order]);
+
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.scrollHeight
+    ) {
+      // load next page
+      if (hasMore && !loading) {
+        fetchEvents(page + 1);
+      }
     }
   };
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [page, hasMore, loading]);
+
+
 
   const handleApply = async (eventId) => {
     const token = localStorage.getItem("riderToken");
