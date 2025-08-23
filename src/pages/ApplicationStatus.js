@@ -80,20 +80,22 @@ export default function ApplicationStatus() {
         ? data.appliedEvents
         : [];
       // Normalize into an array of application objects with event info
-      const normalized = applied.map((item) => {
-        const eventObj = item.eventId || {};
-        return {
-          applicationId: item._id,
-          status: item.status || "Pending",
-          appliedAt: item.appliedAt || item.appliedOn || item.createdAt || "",
-          eventId: eventObj._id || "",
-          title: eventObj.title || "",
-          location: eventObj.location || "",
-          date: eventObj.date || "",
-          // include raw item if you need more
-          raw: item,
-        };
-      });
+ const normalized = applied
+  // skip if eventId is null, undefined, or missing essential fields
+  .filter((item) => item.eventId && item.eventId._id)
+  .map((item) => {
+    const eventObj = item.eventId;
+    return {
+      applicationId: item._id,
+      status: item.status || "Pending",
+      appliedAt: item.appliedAt || item.appliedOn || item.createdAt || "",
+      eventId: eventObj._id,
+      title: eventObj.title,
+      location: eventObj.location,
+      date: eventObj.date,
+      raw: item,
+    };
+  });
 
       setApplications(normalized);
     } catch (err) {
