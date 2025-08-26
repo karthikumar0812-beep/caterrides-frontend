@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_EVENTS = "https://caterrides.onrender.com/api/rider/events";
 const APPLY_ENDPOINT = "https://caterrides.onrender.com/api/rider/apply";
+const APPLICATIONS_ENDPOINT = "https://caterrides.onrender.com/api/rider/applications"; // Add this endpoint
 
 function formatDate(iso) {
   try {
@@ -37,70 +38,59 @@ const RiderDashboard = () => {
   const [order, setOrder] = useState("asc");
   const [showFilters, setShowFilters] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const limit = 20; // 20 events per page
-  const [hasMore, setHasMore] = useState(true); // whether more events exist
-
+  const [appliedEvents, setAppliedEvents] = useState([]); // Track applied events
 
   const navigate = useNavigate();
 
-  const fetchEvents = async (pageNumber = 1) => {
-  if (!hasMore && pageNumber !== 1) return; // stop if no more pages
+  // Fetch applied events
+  const fetchAppliedEvents = async () => {
+    const token = localStorage.getItem("riderToken");
+    if (!token) return;
 
-  setLoading(true);
-  setBackendDown(false);
-
-  try {
-    const url = new URL(API_EVENTS);
-    if (place) url.searchParams.append("place", place);
-    if (sortBy) url.searchParams.append("sortBy", sortBy);
-    if (order) url.searchParams.append("order", order);
-    url.searchParams.append("page", pageNumber);
-    url.searchParams.append("limit", limit);
-
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-
-    const newEvents = Array.isArray(data.events) ? data.events : [];
-    if (pageNumber === 1) {
-      setEvents(newEvents);
-    } else {
-      setEvents((prev) => [...prev, ...newEvents]); // append next page
-    }
-
-    setPage(data.page || pageNumber);
-    setTotalPages(data.totalPages || 1);
-    setHasMore(data.page < data.totalPages); // stop if last page
-  } catch {
-    setBackendDown(true);
-  } finally {
-    setLoading(false);
-  }
-};
- useEffect(() => {
-  fetchEvents(1); // fetch first page on mount
-}, [place, sortBy, order]);
-
-useEffect(() => {
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 100 >=
-      document.documentElement.scrollHeight
-    ) {
-      // load next page
-      if (hasMore && !loading) {
-        fetchEvents(page + 1);
+    try {
+      const res = await fetch(APPLICATIONS_ENDPOINT, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        // Extract event IDs from applications
+        const appliedIds = data.applications ? data.applications.map(app => app.eventId) : [];
+        setAppliedEvents(appliedIds);
       }
+    } catch (error) {
+      console.error("Failed to fetch applications:", error);
     }
   };
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [page, hasMore, loading]);
+  const fetchEvents = async () => {
+    setLoading(true);
+    setBackendDown(false);
+    try {
+      const url = new URL(API_EVENTS);
+      if (place) url.searchParams.append("place", place);
+      if (sortBy) url.searchParams.append("sortBy", sortBy);
+      if (order) url.searchParams.append("order", order);
 
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setEvents(Array.isArray(data) ? data : data.events || []);
+      
+      // Fetch applied events after loading all events
+      await fetchAppliedEvents();
+    } catch {
+      setBackendDown(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const handleApply = async (eventId) => {
     const token = localStorage.getItem("riderToken");
@@ -133,6 +123,9 @@ useEffect(() => {
               : ev
           )
         );
+        
+        // Add to applied events
+        setAppliedEvents(prev => [...prev, eventId]);
         
         // Auto-hide success message after 5 seconds
         setTimeout(() => {
@@ -445,73 +438,88 @@ useEffect(() => {
             </div>
             
             <div className="events-grid" role="list">
-              {events.map((ev) => (
-                <article 
-                  key={ev._id} 
-                  className={`event-card ${(ev.vacancies ?? 0) <= 0 ? 'event-full' : ''}`} 
-                  role="listitem"
-                >
-                  {(ev.vacancies ?? 0) <= 0 && (
-                    <div className="full-event-overlay">
-                      <div className="full-event-tag">Fully Booked</div>
+              {events.map((ev) => {
+                const isApplied = appliedEvents.includes(ev._id);
+                const isFull = (ev.vacancies ?? 0) <= 0;
+                
+                return (
+                  <article 
+                    key={ev._id} 
+                    className={`event-card ${isFull ? 'event-full' : ''} ${isApplied ? 'event-applied' : ''}`} 
+                    role="listitem"
+                  >
+                    {isFull && (
+                      <div className="full-event-overlay">
+                        <div className="full-event-tag">Fully Booked</div>
+                      </div>
+                    )}
+                    
+                    {isApplied && (
+                      <div className="applied-event-overlay">
+                        <div className="applied-event-tag">
+                          <FaCheckCircle /> Applied
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="card-gradient-border">
+                      <div className="card-content">
+                        <div className="card-header">
+                          <h3>{ev.title}</h3>
+                          <div className="price-badge">
+                            ₹{ev.negotiatePrice ?? "N/A"}
+                          </div>
+                        </div>
+
+                        <div className="card-location">
+                          <FaMapMarkerAlt />
+                          <span>{ev.location}</span>
+                        </div>
+
+                        <div className="card-details">
+                          <div className="detail-item">
+                            <FaCalendarAlt />
+                            <span>{formatDate(ev.date)}</span>
+                          </div>
+                          <div className="detail-item">
+                            <FaUsers />
+                            <span>{ev.vacancies ?? "N/A"} vacancies left</span>
+                          </div>
+                        </div>
+
+                        <div className="card-description">
+                          <p>{ev.description?.substring(0, 100)}{ev.description?.length > 100 ? '...' : ''}</p>
+                          <button
+                            className="read-more-btn"
+                            onClick={() => toggleDescription(ev._id)}
+                          >
+                            <FaInfoCircle /> Read more
+                          </button>
+                        </div>
+
+                        <div className="card-actions">
+                          <button
+                            className="apply-btn"
+                            onClick={() => handleApply(ev._id)}
+                            disabled={applyingId === ev._id || isFull || isApplied}
+                          >
+                            {applyingId === ev._id
+                              ? "Applying..."
+                              : isApplied
+                              ? "Applied"
+                              : isFull
+                              ? "Fully Booked"
+                              : "Apply Now"}
+                          </button>
+                          <button className="share-btn">
+                            <FaExternalLinkAlt />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  
-                  <div className="card-gradient-border">
-                    <div className="card-content">
-                      <div className="card-header">
-                        <h3>{ev.title}</h3>
-                        <div className="price-badge">
-                          ₹{ev.negotiatePrice ?? "N/A"}
-                        </div>
-                      </div>
-
-                      <div className="card-location">
-                        <FaMapMarkerAlt />
-                        <span>{ev.location}</span>
-                      </div>
-
-                      <div className="card-details">
-                        <div className="detail-item">
-                          <FaCalendarAlt />
-                          <span>{formatDate(ev.date)}</span>
-                        </div>
-                        <div className="detail-item">
-                          <FaUsers />
-                          <span>{ev.vacancies ?? "N/A"} vacancies left</span>
-                        </div>
-                      </div>
-
-                      <div className="card-description">
-                        <p>{ev.description?.substring(0, 100)}{ev.description?.length > 100 ? '...' : ''}</p>
-                        <button
-                          className="read-more-btn"
-                          onClick={() => toggleDescription(ev._id)}
-                        >
-                          <FaInfoCircle /> Read more
-                        </button>
-                      </div>
-
-                      <div className="card-actions">
-                        <button
-                          className="apply-btn"
-                          onClick={() => handleApply(ev._id)}
-                          disabled={applyingId === ev._id || (ev.vacancies ?? 0) <= 0}
-                        >
-                          {applyingId === ev._id
-                            ? "Applying..."
-                            : (ev.vacancies ?? 0) > 0
-                            ? "Apply Now"
-                            : "Fully Booked"}
-                        </button>
-                        <button className="share-btn">
-                          <FaExternalLinkAlt />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </section>
         )}
@@ -544,10 +552,14 @@ useEffect(() => {
                     handleApply(openDescriptionId);
                     setOpenDescriptionId(null);
                   }}
-                  disabled={applyingId === openDescriptionId || (events.find((ev) => ev._id === openDescriptionId)?.vacancies ?? 0) <= 0}
+                  disabled={applyingId === openDescriptionId || 
+                           (events.find((ev) => ev._id === openDescriptionId)?.vacancies ?? 0) <= 0 ||
+                           appliedEvents.includes(openDescriptionId)}
                 >
                   {applyingId === openDescriptionId 
                     ? "Applying..." 
+                    : appliedEvents.includes(openDescriptionId)
+                    ? "Already Applied"
                     : (events.find((ev) => ev._id === openDescriptionId)?.vacancies ?? 0) > 0
                     ? "Apply for this Event" 
                     : "Fully Booked"}

@@ -59,34 +59,60 @@ const Organizerlogin = () => {
   };
 
   return (
-    <div className="login-container" aria-busy={loading}>
-      <h2>Organizer Login</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <h2>Organizer Login</h2>
+          <p>Access your event management dashboard</p>
+        </div>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading}
-        />
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              className={error ? "input-error" : ""}
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
+          <div className="input-group">
+            <input
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              className={error ? "input-error" : ""}
+            />
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className={`login-button ${loading ? "loading" : ""}`}
+          >
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
+          </button>
 
-        {error && <p className="error-text" role="alert">{error}</p>}
-      </form>
+          {error && (
+            <div className="error-message" role="alert">
+              {error}
+            </div>
+          )}
+        </form>
+      </div>
     </div>
   );
 };

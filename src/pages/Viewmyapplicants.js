@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "../styles/viewmyapplicants.css"
 import { useParams } from "react-router-dom";
-import { FaDownload, FaCheck, FaTimes, FaUser, FaEnvelope, FaPhone, FaStar, FaCheckCircle, FaSpinner, FaExclamationTriangle } from "react-icons/fa";
+import "../styles/viewmyapplicants.css";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; 
 
@@ -106,46 +105,47 @@ const Viewmyapplicats = () => {
     setSelectedAction(null);
     setSelectedRider(null);
   };
+//pdf generation
+const downloadPDF = (applicants) => {
+  const doc = new jsPDF();
 
-  // PDF generation
-  const downloadPDF = (applicants) => {
-    const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text("CaterRides - Accepted Riders List", 14, 15);
+  doc.setFontSize(12);
+  doc.setTextColor(99);
 
-    doc.setFontSize(18);
-    doc.text("CaterRides - Accepted Riders List", 14, 15);
-    doc.setFontSize(12);
-    doc.setTextColor(99);
+  const tableColumn = ["#", "Name", "Phone", "Email", "Status"];
+  const tableRows = [];
 
-    const tableColumn = ["#", "Name", "Phone", "Email", "Status"];
-    const tableRows = [];
-
-    // Filter only accepted applicants (case-insensitive)
-    applicants
-      .filter(applicant => applicant.status?.toLowerCase() === "accepted")
-      .forEach((applicant, index) => {
-        tableRows.push([
-          index + 1,
-          applicant.rider.name,
-          applicant.rider.phone,
-          applicant.rider.email,
-          applicant.status
-        ]);
-      });
-
-    doc.text(
-      "*Accepted riders don't guarantee participation. Keep in contact with booked riders via phone or email.",
-      8,
-      25
-    );
-
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 35,
+  // Filter only accepted applicants (case-insensitive)
+  applicants
+    .filter(applicant => applicant.status?.toLowerCase() === "accepted")
+    .forEach((applicant, index) => {
+      tableRows.push([
+        index + 1,
+        applicant.rider.name,
+        applicant.rider.phone,
+        applicant.rider.email,
+        applicant.status
+      ]);
     });
 
-    doc.save("accepted_applicants.pdf");
-  };
+  doc.text(
+    "*Accepted riders don't guarantee participation. Keep in contact with booked riders via phone or email.",
+    8,
+    25
+  );
+
+  autoTable(doc, {
+    head: [tableColumn],
+    body: tableRows,
+    startY: 35,
+  });
+
+  doc.save("accepted_applicants.pdf");
+};
+
+
 
   if (loading) {
     return (
@@ -162,119 +162,84 @@ const Viewmyapplicats = () => {
       {successMessage && (
         <div className="success-popup show">{successMessage}</div>
       )}
-      
       <div className="applicants-container">
-        <div className="header-section">
-          <h2 className="applicants-heading">Applicants</h2>
-          <button className="download-pdf-btn" onClick={() => downloadPDF(applicants)}>
-            <FaDownload className="btn-icon" />
-            Download PDF
-          </button>
-        </div>
-        
+        <h2 className="applicants-heading">Applicants</h2>
+        <button className="pdf" onClick={() => downloadPDF(applicants)}>Download PDF</button>
         {applicants.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">👥</div>
-            <h3>No applicants yet</h3>
-            <p>Applicants will appear here once riders apply to your event</p>
-          </div>
+          <p className="no-data">No applicants found</p>
         ) : (
-          <div className="applicants-grid">
-            {applicants.map((applicant, index) => (
-              <div 
-                key={applicant.rider._id} 
-                className="applicant-card"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="card-header">
-                  <div className="avatar">
-                    {applicant.rider.name ? applicant.rider.name.charAt(0).toUpperCase() : "R"}
-                  </div>
-                  <div className="applicant-name">{applicant.rider.name}</div>
-                  <div className={`status-badge ${applicant.status}`}>
-                    {applicant.status === "accepted" ? "Booked" : applicant.status === "rejected" ? "Rejected" : "Pending"}
-                  </div>
-                </div>
-
-                <div className="applicant-details">
-                  <div className="detail-item">
-                    <FaEnvelope className="detail-icon" />
-                    <span>{applicant.rider.email}</span>
-                  </div>
-                  <div className="detail-item">
-                    <FaPhone className="detail-icon" />
-                    <span>{applicant.rider.phone}</span>
-                  </div>
-                  <div className="detail-item">
-                    <FaUser className="detail-icon" />
-                    <span>{applicant.rider.servesCompleted} services completed</span>
-                  </div>
-                  <div className="detail-item">
-                    <FaStar className="detail-icon star" />
-                    <span>Rating: {applicant.rider.rating}</span>
-                  </div>
-                </div>
-
-                <div className="card-actions">
-                  {!["accepted", "rejected"].includes(applicant.status) && (
-                    <>
-                      <button
-                        className="action-btn reject"
-                        onClick={() => openModal("rejected", applicant.rider._id)}
-                      >
-                        <FaTimes /> Reject
-                      </button>
-                      <button
-                        className="action-btn accept"
-                        onClick={() => openModal("accepted", applicant.rider._id)}
-                      >
-                        <FaCheck /> Book
-                      </button>
-                    </>
-                  )}
-                </div>
+          applicants.map((applicant) => (
+            <div key={applicant.rider._id} className="applicant-card">
+              <div className="applicant-info">
+                <p><strong>Name:</strong> {applicant.rider.name}</p>
+                <p><strong>Email:</strong> {applicant.rider.email}</p>
+                <p><strong>Phone:</strong> {applicant.rider.phone}</p>
+                <p><strong>Serves Completed:</strong> {applicant.rider.servesCompleted}</p>
+                <p><strong>Rating:</strong> {applicant.rider.rating}</p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span
+                    className={`status-tag ${
+                      applicant.status === "accepted"
+                        ? "status-booked"
+                        : applicant.status === "rejected"
+                        ? "status-rejected"
+                        : "status-pending"
+                    }`}
+                  >
+                    {applicant.status === "accepted"
+                      ? "Booked ✅"
+                      : applicant.status === "rejected"
+                      ? "Rejected ❌"
+                      : "Pending"}
+                  </span>
+                </p>
               </div>
-            ))}
-          </div>
+
+              <div className="applicant-actions">
+                {!["accepted", "rejected"].includes(applicant.status) && (
+                  <>
+                    <button
+                      className="reject-btn"
+                      onClick={() => openModal("rejected", applicant.rider._id)}
+                    >
+                      Reject
+                    </button>
+                    <button
+                      className="book-btn"
+                      onClick={() => openModal("accepted", applicant.rider._id)}
+                    >
+                      Book
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))
         )}
 
         {/* Popup Modal */}
         {showModal && (
-          <div className="modal-overlay">
-            <div className="confirmation-modal">
-              <div className="modal-header">
-                <h3>Confirm {selectedAction}</h3>
-                <button className="modal-close" onClick={handleCancel}>
-                  <FaTimes />
-                </button>
-              </div>
-              
-              <div className="modal-body">
-                <div className="modal-icon">
-                  {selectedAction === "accepted" ? (
-                    <FaCheckCircle className="success" />
-                  ) : (
-                    <FaExclamationTriangle className="warning" />
-                  )}
-                </div>
-                <p>
-                  Are you sure you want to {selectedAction.toLowerCase()} this applicant?
-                  Once confirmed, you will not be able to update this decision.
-                </p>
-              </div>
+          <div className="modal-overlay fade-in">
+            <div className="modal scale-up">
+              <h3>Confirm {selectedAction}</h3>
+              <p>
+                Are you sure you want to {selectedAction.toLowerCase()} this
+                applicant?,once confirmation made you will not able to update later..
+              </p>
 
-              <div className="modal-actions">
-                <button className="modal-btn cancel" onClick={handleCancel}>
-                  Cancel
-                </button>
-                <button 
-                  className={`modal-btn confirm ${selectedAction}`} 
-                  onClick={handleConfirm}
-                  disabled={actionLoading}
-                >
-                  {actionLoading ? <FaSpinner className="spinner" /> : `Yes, ${selectedAction}`}
-                </button>
-              </div>
+              {actionLoading ? (
+                <div className="spinner"></div>
+              ) : (
+                <div className="modal-buttons">
+                  <button className="cancel-btn" onClick={handleCancel}>
+                    Cancel
+                  </button>
+                  <button className="confirm-btn" onClick={handleConfirm}>
+                    Yes, {selectedAction}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
