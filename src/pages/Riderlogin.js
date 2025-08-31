@@ -90,7 +90,6 @@ const RiderLogin = () => {
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="input-group">
-            <FaEnvelope className="input-icon" />
             <input
               type="email"
               placeholder="Enter your email"
@@ -103,7 +102,6 @@ const RiderLogin = () => {
           </div>
 
           <div className="input-group">
-            <FaLock className="input-icon" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
