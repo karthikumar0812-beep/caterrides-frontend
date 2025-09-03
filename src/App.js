@@ -13,6 +13,7 @@ import Viewmyapplicats from "./pages/Viewmyapplicants";
 import Organizerprofile from "./pages/Organizerprofile";
 import Viewevent from "./pages/Viewevent";
 import UpdateEvent from "./pages/UpdateEvent";
+import Forgotpassword from "./pages/Forgotpassword"
 function App() {
   return (
     <Router>
@@ -32,7 +33,7 @@ function App() {
         <Route path="/organizer-profile" element={<Organizerprofile/>} />
         <Route path="/rider/event/:eventId" element={<Viewevent/>} />
         <Route path="update-event/:eventId" element={<UpdateEvent/>} />
-        
+        <Route path="/forgot-password" element={<Forgotpassword/>} /> 
       </Routes>
     </Router>
   );
