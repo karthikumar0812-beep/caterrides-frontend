@@ -17,6 +17,7 @@ const PostEvent = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [autoAccept, setAutoAccept] = useState(false);
 
   // autocomplete state
   const [suggestions, setSuggestions] = useState([]); // {display, lat, lon}
@@ -87,12 +88,18 @@ const PostEvent = () => {
           return /tamil/i.test(state || county || formatted);
         });
 
-        const chosen = (tnMatches.length ? tnMatches : data.results).map((r) => ({
-          display: r.formatted,
-          lat: r.geometry?.lat ?? (r.geometry ? r.geometry.coordinates?.[1] : null),
-          lon: r.geometry?.lng ?? (r.geometry ? r.geometry.coordinates?.[0] : null),
-          raw: r,
-        }));
+        const chosen = (tnMatches.length ? tnMatches : data.results).map(
+          (r) => ({
+            display: r.formatted,
+            lat:
+              r.geometry?.lat ??
+              (r.geometry ? r.geometry.coordinates?.[1] : null),
+            lon:
+              r.geometry?.lng ??
+              (r.geometry ? r.geometry.coordinates?.[0] : null),
+            raw: r,
+          })
+        );
 
         cacheRef.current.set(query, chosen);
         setSuggestions(chosen);
@@ -150,6 +157,7 @@ const PostEvent = () => {
         vacancies: parseInt(vacancies || "0"),
         negotiatePrice: parseFloat(negotiatePrice || "0"),
         description,
+        autoAccept,
         lat: coords?.lat ?? null,
         lng: coords?.lng ?? null,
       };
@@ -294,6 +302,15 @@ const PostEvent = () => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
+
+        <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <input
+            type="checkbox"
+            checked={autoAccept}
+            onChange={(e) => setAutoAccept(e.target.checked)}
+          />
+          Auto-accept
+        </label>
 
         <button type="submit" disabled={loading}>
           {loading ? "Posting..." : "Post Event"}

@@ -173,6 +173,7 @@ const RiderDashboard = () => {
             <button onClick={() => setShowStatus(false)} className="notification-close">
               <FaTimes />
             </button>
+            <img src="/cbe-template.png" alt="cbe" className="cbe-img" />
           </div>
         </div>
       )}
