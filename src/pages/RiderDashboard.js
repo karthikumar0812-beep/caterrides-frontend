@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "../styles//RiderDashboard.css";
-import { FaBars, FaTimes, FaInfoCircle, FaSearch, FaFilter, FaSortAmountDown, FaSortAmountUpAlt, FaCalendarAlt, FaMapMarkerAlt, FaUsers, FaMoneyBillWave, FaExternalLinkAlt, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import {
+  FaBars,
+  FaTimes,
+  FaInfoCircle,
+  FaSearch,
+  FaFilter,
+  FaSortAmountDown,
+  FaSortAmountUpAlt,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaUsers,
+  FaMoneyBillWave,
+  FaExternalLinkAlt,
+  FaCheckCircle,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const API_EVENTS = "https://caterrides.onrender.com/api/rider/events";
@@ -95,7 +110,7 @@ const RiderDashboard = () => {
               : ev
           )
         );
-        
+
         // Auto-hide success message after 5 seconds
         setTimeout(() => {
           setShowStatus(false);
@@ -104,7 +119,7 @@ const RiderDashboard = () => {
         setStatusMessage(data.message || "Apply failed");
         setStatusType("error");
         setShowStatus(true);
-        
+
         // Auto-hide error message after 5 seconds
         setTimeout(() => {
           setShowStatus(false);
@@ -161,16 +176,27 @@ const RiderDashboard = () => {
     <div className={`dashboard-wrapper ${sidebarOpen ? "sidebar-open" : ""}`}>
       {/* Status Notification - Fixed at top */}
       {showStatus && (
-        <div className={`status-notification ${statusType} ${showStatus ? 'show' : ''}`}>
+        <div
+          className={`status-notification ${statusType} ${
+            showStatus ? "show" : ""
+          }`}
+        >
           <div className="notification-content">
             <div className="notification-icon">
-              {statusType === "success" ? <FaCheckCircle /> : <FaExclamationTriangle />}
+              {statusType === "success" ? (
+                <FaCheckCircle />
+              ) : (
+                <FaExclamationTriangle />
+              )}
             </div>
             <div className="notification-text">
               <h4>{statusType === "success" ? "Success!" : "Error"}</h4>
               <p>{statusMessage}</p>
             </div>
-            <button onClick={() => setShowStatus(false)} className="notification-close">
+            <button
+              onClick={() => setShowStatus(false)}
+              className="notification-close"
+            >
               <FaTimes />
             </button>
             <img src="/cbe-template.png" alt="cbe" className="cbe-img" />
@@ -206,14 +232,16 @@ const RiderDashboard = () => {
             <span className="nav-icon">📋</span>
             <span className="nav-text">Applications</span>
           </button>
-  
+
           <button className="nav-btn logout-btn" onClick={handleLogout}>
             <span className="nav-icon">🚪</span>
             <span className="nav-text">Logout</span>
           </button>
         </nav>
         <div className="sidebar-footer">
-          <p>Need help? <a href="/support">Contact Support</a></p>
+          <p>
+            Need help? <a href="/support">Contact Support</a>
+          </p>
         </div>
       </aside>
 
@@ -306,13 +334,16 @@ const RiderDashboard = () => {
           <div className="error-container">
             <div className="error-icon">🔌</div>
             <h3>Service temporarily unavailable</h3>
-            <p>We're having trouble connecting to our servers. Please try again later.</p>
+            <p>
+              We're having trouble connecting to our servers. Please try again
+              later.
+            </p>
             <button onClick={fetchEvents} className="retry-btn">
               Try Again
             </button>
           </div>
         )}
-        
+
         {!backendDown && !loading && events.length === 0 && (
           <div className="empty-state">
             <div className="empty-icon">📋</div>
@@ -323,7 +354,7 @@ const RiderDashboard = () => {
             </button>
           </div>
         )}
-        
+
         {/* Search and Filters Section */}
         {!backendDown && !loading && events.length > 0 && (
           <div className="filters-container">
@@ -341,54 +372,68 @@ const RiderDashboard = () => {
                   Search
                 </button>
               </div>
-              
-              <button 
+
+              <button
                 className="filter-toggle-btn"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <FaFilter />
-                {showFilters ? 'Hide Filters' : 'Show Filters'}
+                {showFilters ? "Hide Filters" : "Show Filters"}
               </button>
             </div>
-            
+            <div className="image-row">
+              <div className="image-card">
+                <img src="/cbe-template.png" alt="cbe" className="cbe-img" />
+                <p>Coimbatore Template</p>
+              </div>
+            </div>
+
             {showFilters && (
               <div className="advanced-filters">
                 <div className="filter-group">
                   <label>Sort By</label>
                   <div className="filter-options">
-                    <button 
-                      className={`filter-option ${sortBy === 'date' ? 'active' : ''}`}
-                      onClick={() => setSortBy('date')}
+                    <button
+                      className={`filter-option ${
+                        sortBy === "date" ? "active" : ""
+                      }`}
+                      onClick={() => setSortBy("date")}
                     >
                       <FaCalendarAlt /> Date
                     </button>
-                    <button 
-                      className={`filter-option ${sortBy === 'price' ? 'active' : ''}`}
-                      onClick={() => setSortBy('price')}
+                    <button
+                      className={`filter-option ${
+                        sortBy === "price" ? "active" : ""
+                      }`}
+                      onClick={() => setSortBy("price")}
                     >
                       <FaMoneyBillWave /> Price
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="filter-group">
                   <label>Order</label>
                   <div className="filter-options">
-                    <button 
-                      className={`filter-option ${order === 'asc' ? 'active' : ''}`}
-                      onClick={() => setOrder('asc')}
+                    <button
+                      className={`filter-option ${
+                        order === "asc" ? "active" : ""
+                      }`}
+                      onClick={() => setOrder("asc")}
                     >
                       <FaSortAmountDown /> Ascending
                     </button>
-                    <button 
-                      className={`filter-option ${order === 'desc' ? 'active' : ''}`}
-                      onClick={() => setOrder('desc')}
+                    <button
+                      className={`filter-option ${
+                        order === "desc" ? "active" : ""
+                      }`}
+                      onClick={() => setOrder("desc")}
                     >
                       <FaSortAmountUpAlt /> Descending
                     </button>
                   </div>
                 </div>
-                
+
                 <button onClick={fetchEvents} className="apply-filters-btn">
                   Apply Filters
                 </button>
@@ -406,12 +451,14 @@ const RiderDashboard = () => {
                 <button className="view-option">List</button>
               </div>
             </div>
-            
+
             <div className="events-grid" role="list">
               {events.map((ev) => (
-                <article 
-                  key={ev._id} 
-                  className={`event-card ${(ev.vacancies ?? 0) <= 0 ? 'event-full' : ''}`} 
+                <article
+                  key={ev._id}
+                  className={`event-card ${
+                    (ev.vacancies ?? 0) <= 0 ? "event-full" : ""
+                  }`}
                   role="listitem"
                 >
                   {(ev.vacancies ?? 0) <= 0 && (
@@ -419,7 +466,7 @@ const RiderDashboard = () => {
                       <div className="full-event-tag">Fully Booked</div>
                     </div>
                   )}
-                  
+
                   <div className="card-gradient-border">
                     <div className="card-content">
                       <div className="card-header">
@@ -446,7 +493,10 @@ const RiderDashboard = () => {
                       </div>
 
                       <div className="card-description">
-                        <p>{ev.description?.substring(0, 100)}{ev.description?.length > 100 ? '...' : ''}</p>
+                        <p>
+                          {ev.description?.substring(0, 100)}
+                          {ev.description?.length > 100 ? "..." : ""}
+                        </p>
                         <button
                           className="read-more-btn"
                           onClick={() => toggleDescription(ev._id)}
@@ -459,7 +509,9 @@ const RiderDashboard = () => {
                         <button
                           className="apply-btn"
                           onClick={() => handleApply(ev._id)}
-                          disabled={applyingId === ev._id || (ev.vacancies ?? 0) <= 0}
+                          disabled={
+                            applyingId === ev._id || (ev.vacancies ?? 0) <= 0
+                          }
                         >
                           {applyingId === ev._id
                             ? "Applying..."
@@ -491,14 +543,21 @@ const RiderDashboard = () => {
               >
                 <FaTimes />
               </button>
-              <h2>{events.find((ev) => ev._id === openDescriptionId)?.title}</h2>
+              <h2>
+                {events.find((ev) => ev._id === openDescriptionId)?.title}
+              </h2>
               <div className="modal-location">
                 <FaMapMarkerAlt />
-                <span>{events.find((ev) => ev._id === openDescriptionId)?.location}</span>
+                <span>
+                  {events.find((ev) => ev._id === openDescriptionId)?.location}
+                </span>
               </div>
               <div className="modal-description">
                 <h4>Description</h4>
-                <p>{events.find((ev) => ev._id === openDescriptionId)?.description || "No description available."}</p>
+                <p>
+                  {events.find((ev) => ev._id === openDescriptionId)
+                    ?.description || "No description available."}
+                </p>
               </div>
               <div className="modal-actions">
                 <button
@@ -507,12 +566,17 @@ const RiderDashboard = () => {
                     handleApply(openDescriptionId);
                     setOpenDescriptionId(null);
                   }}
-                  disabled={applyingId === openDescriptionId || (events.find((ev) => ev._id === openDescriptionId)?.vacancies ?? 0) <= 0}
+                  disabled={
+                    applyingId === openDescriptionId ||
+                    (events.find((ev) => ev._id === openDescriptionId)
+                      ?.vacancies ?? 0) <= 0
+                  }
                 >
-                  {applyingId === openDescriptionId 
-                    ? "Applying..." 
-                    : (events.find((ev) => ev._id === openDescriptionId)?.vacancies ?? 0) > 0
-                    ? "Apply for this Event" 
+                  {applyingId === openDescriptionId
+                    ? "Applying..."
+                    : (events.find((ev) => ev._id === openDescriptionId)
+                        ?.vacancies ?? 0) > 0
+                    ? "Apply for this Event"
                     : "Fully Booked"}
                 </button>
               </div>
@@ -520,7 +584,6 @@ const RiderDashboard = () => {
           </div>
         )}
       </main>
-
     </div>
   );
 };

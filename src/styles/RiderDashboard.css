@@ -802,6 +802,34 @@ body {
   transform: none;
 }
 
+.image-row {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  gap: 16px; /* space between cards */
+  margin-top: 16px;
+  flex-wrap: wrap; /* make it responsive */
+}
+
+.image-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 220px; /* card width */
+  transition: transform 0.2s;
+}
+
+.image-card:hover {
+  transform: translateY(-4px);
+}
+
+.cbe-img {
+  width: 250px;
+  height: auto;
+  border-radius: 8px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .dashboard-sidebar {

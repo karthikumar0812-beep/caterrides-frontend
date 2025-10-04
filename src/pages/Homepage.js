@@ -19,6 +19,7 @@ const HomePage = () => {
           <Link to="/rider" className="role-button rider">
             CaterRider
           </Link>
+          <p>caterrides is temporarily not available for email oriented services..</p>
         </div>
       </div>
     </div>
