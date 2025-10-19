@@ -381,12 +381,7 @@ const RiderDashboard = () => {
                 {showFilters ? "Hide Filters" : "Show Filters"}
               </button>
             </div>
-            <div className="image-row">
-              <div className="image-card">
-                <img src="/cbe-template.png" alt="cbe" className="cbe-img" />
-                <p>Coimbatore Template</p>
-              </div>
-            </div>
+        
 
             {showFilters && (
               <div className="advanced-filters">
